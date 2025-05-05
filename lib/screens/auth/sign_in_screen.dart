@@ -138,7 +138,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             );
                           } else {
                             Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (_) => const Quiz()),
+                              MaterialPageRoute(builder: (_) => Quiz(progress: 0,)),
                             );
                           }
 

@@ -68,7 +68,7 @@ class AuthGate extends StatelessWidget {
                 );
               }
               if (futureSnapshot.data == false) {
-                return const Quiz();
+                return const Quiz(progress: 0,);
               } else {
                 return const Tutorial();
               }

@@ -5,12 +5,13 @@ import 'package:tutorial_app/quiz/questions_summary/questions_summary.dart';
 import 'package:tutorial_app/screens/tutorial/tutorial_home.dart';
 import 'package:tutorial_app/userPreferences.dart';
 
-import 'data/questions1.dart';
+import 'data/questions.dart';
 
 class ResultsScreen extends StatelessWidget {
-  ResultsScreen(this.switchScreen, {super.key, required this.chosenAnswers});
+  ResultsScreen(this.switchScreen, {super.key, required this.chosenAnswers, required this.progress});
 
   final void Function() switchScreen;
+  final progress;
   List<String> chosenAnswers;
 
   List<Map<String, Object>> getSummaryData() {
@@ -19,8 +20,8 @@ class ResultsScreen extends StatelessWidget {
     for (int i = 0; i < chosenAnswers.length; i++) {
       summary.add({
         'question_index': i,
-        'question': questions[i].text,
-        'correct_answer': questions[i].answers[0],
+        'question': questions[progress]![i].text,
+        'correct_answer': questions[progress]![i].answers[0],
         'user_answer': chosenAnswers[i],
       });
     }

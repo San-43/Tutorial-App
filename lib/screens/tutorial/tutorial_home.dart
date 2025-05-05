@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/screens/tutorial/data/images_list.dart';
+import 'package:tutorial_app/screens/tutorial/data/resources_list.dart';
 import 'package:tutorial_app/screens/tutorial/topics/Topic.dart';
 import 'package:tutorial_app/screens/tutorial/units.dart';
 import 'package:video_player/video_player.dart';
@@ -182,8 +183,9 @@ class _TutorialState extends State<Tutorial> {
                                 MaterialPageRoute(
                                   builder:
                                       (context) => Topic(
+                                        resources: resourcesList[index+1]!,
                                         images: imagesList[index+1]!,
-                                        identifier: index,
+                                        identifier: units[index].title,
                                       ),
                                 ),
                               );

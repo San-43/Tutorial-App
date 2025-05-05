@@ -269,7 +269,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
 
                           Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (_) => const Quiz()),
+                            MaterialPageRoute(builder: (_) => const Quiz(progress: 0,)),
                           );
                         } on FirebaseAuthException catch (e) {
                           setState(() {

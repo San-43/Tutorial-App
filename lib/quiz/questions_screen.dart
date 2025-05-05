@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'answer_button.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'data/questions1.dart';
+import 'data/questions.dart';
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key, required this.onSelectAnswer});
+  const QuestionsScreen({super.key, required this.onSelectAnswer, required this.progress});
 
   final void Function(String answer) onSelectAnswer;
+  final progress;
+
 
   @override
   State<QuestionsScreen> createState() => _QuestionsScreenState();
@@ -26,7 +28,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = questions[currentQuestionIndex];
+    final currentQuestion = questions[widget.progress]![currentQuestionIndex];
 
     return SizedBox(
       width: double.infinity,
