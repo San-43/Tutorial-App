@@ -118,6 +118,8 @@ class _TopicState extends State<Topic> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 6.0,
         height: 60,
         elevation: 3,
         child: Row(
