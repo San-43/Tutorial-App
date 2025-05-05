@@ -61,7 +61,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/quiz-logo.png
+    - assets/images/
     - assets/tutorial_video.mp4
     - assets/topic1/
     - assets/topic2/

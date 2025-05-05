@@ -120,6 +120,23 @@ class _TopicState extends State<Topic> {
       bottomNavigationBar: BottomAppBar(
         height: 60,
         elevation: 3,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            TextButton.icon(
+              icon: const Icon(Icons.quiz),
+              label: Text('Ir al Quiz'),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => Quiz(progress: widget.index + 1),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 16), // spacing from right edge
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: ElevatedButton(
@@ -236,34 +253,6 @@ class _TopicState extends State<Topic> {
                           ),
                         );
                       },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 32,
-                          vertical: 16,
-                        ),
-                        elevation: 4,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder:
-                                (context) => Quiz(progress: widget.index + 1),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Ir al Quiz',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
                     ),
                   ),
                 ],
