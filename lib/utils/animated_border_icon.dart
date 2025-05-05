@@ -10,7 +10,7 @@ class AnimatedBorderIcon extends StatefulWidget {
     super.key,
     required this.icon,
     this.width = 50.0,
-    this.color = Colors.deepOrange,
+    this.color = Colors.blue,
   });
 
   @override

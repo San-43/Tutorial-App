@@ -119,6 +119,7 @@ class _TopicState extends State<Topic> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
+        color: Colors.greenAccent,
         notchMargin: 6.0,
         height: 60,
         elevation: 3,
@@ -156,7 +157,7 @@ class _TopicState extends State<Topic> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.deepOrangeAccent,
+                    color: Colors.blueAccent,
                     offset: Offset(0, 0),
                     blurStyle: BlurStyle.normal,
                     blurRadius: 2,
