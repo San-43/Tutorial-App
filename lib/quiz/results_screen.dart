@@ -65,6 +65,8 @@ class _ResultsScreenState extends State<ResultsScreen> {
     final double results =
         (numCorrectQuestions / numTotalQuestions * 100).toDouble();
 
+    updateProgress(results);
+
     return SizedBox(
       width: double.infinity,
       child: Container(
@@ -75,8 +77,8 @@ class _ResultsScreenState extends State<ResultsScreen> {
           children: [
             Text(
               results >= 60
-                  ? 'Aprobaste el quiz con un $results% FELICIDADES!'
-                  : 'Reprobaste el quiz con un $results%, más suerte la próxima vez',
+                  ? 'Aprobaste el quiz con un ${results.toStringAsFixed(1)}% FELICIDADES!'
+                  : 'Reprobaste el quiz con un ${results.toStringAsFixed(1)}%, más suerte la próxima vez',
               style: GoogleFonts.lato(
                 color:
                     results >= 60
@@ -107,8 +109,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
             SizedBox(height: 10),
             TextButton.icon(
               onPressed: () async {
-                updateProgress(results);
-
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => Tutorial()),
                 );

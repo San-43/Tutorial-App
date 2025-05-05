@@ -14,8 +14,10 @@ class Topic extends StatefulWidget {
     required this.resources,
     required this.images,
     required this.identifier,
+    required this.index,
   });
 
+  final int index;
   final String identifier;
   final List<String> images;
   final List<Resource> resources;
@@ -113,6 +115,9 @@ class _TopicState extends State<Topic> {
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+
       ),
       // Aplicamos un gradiente de fondo usando colores más suaves de los contenedores del Theme
       body: Column(
@@ -215,7 +220,7 @@ class _TopicState extends State<Topic> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => Quiz(progress: progress),
+                            builder: (context) => Quiz(progress: widget.index + 1),
                           ),
                         );
                       },

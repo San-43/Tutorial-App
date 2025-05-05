@@ -152,7 +152,8 @@ class _TutorialState extends State<Tutorial> {
               final bool isHovered = hoverIndex == index;
 
               Color baseColor =
-                  isActive ? Colors.redAccent : Colors.grey.shade300;
+                  isActive ? (index < progress-1 ? Colors.green : Colors.redAccent): Colors.grey.shade300;
+
               Color hoverColor = isActive ? Colors.green.shade700 : baseColor;
 
               return MouseRegion(
@@ -173,17 +174,21 @@ class _TutorialState extends State<Tutorial> {
                     borderRadius: BorderRadius.circular(12),
                     onTap:
                         isActive
-                            ? () {
-                              Navigator.of(context).push(
+                            ? () async {
+                              await Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder:
                                       (context) => Topic(
                                         resources: resourcesList[index+1]!,
                                         images: imagesList[index+1]!,
                                         identifier: units[index].title,
+                                        index: index,
                                       ),
                                 ),
                               );
+                              setState(() {
+                                userImage = user!.photoURL;
+                              });
                             }
                             : () {
                               ScaffoldMessenger.of(context).showSnackBar(
