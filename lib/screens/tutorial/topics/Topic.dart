@@ -119,7 +119,7 @@ class _TopicState extends State<Topic> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Colors.greenAccent,
+        color: Theme.of(context).colorScheme.primary,
         notchMargin: 6.0,
         height: 60,
         elevation: 3,
@@ -127,8 +127,9 @@ class _TopicState extends State<Topic> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextButton.icon(
-              icon: const Icon(Icons.quiz),
-              label: Text('Ir al Quiz'),
+              icon: const Icon(Icons.quiz, color: Color.fromRGBO(
+                  0, 255, 150, 1.0),),
+              label: Text('Ir al Quiz', style: TextStyle(color: Colors.white),),
               onPressed: () {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
