@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage(this.starQuiz, {super.key});
+  const HomePage(this.starQuiz,{super.key});
 
   final void Function() starQuiz;
 
@@ -14,13 +14,14 @@ class HomePage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            'assets/images/IOP.png',
+            'assets/images/quiz-logo.png',
             width: 300,
-            height: 300
+            height: 300,
+            color: Color.fromARGB(160, 255, 255, 255),
           ),
           SizedBox(height: 60),
           Text(
-            'Learn C++ the fun way!',
+            'Learn Flutter the fun way!',
             style: GoogleFonts.tangerine(fontSize: 45, color: Colors.white),
           ),
           SizedBox(height: 30),

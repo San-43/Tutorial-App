@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/firestore/user_firestore_service.dart';
+import 'package:tutorial_app/userPreferences.dart';
 import '../../quiz/quiz.dart';
 import 'components/my_text_field.dart';
 
@@ -237,16 +240,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       });
                       if (_formKey.currentState!.validate()) {
                         try {
-                          final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                          final credential = await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              );
+
+                          await credential.user!.updateDisplayName(
+                            nameController.text,
+                          );
+                          await credential.user!.reload();
+
+                          await UserFirestoreService().createUser(
+                            uid: credential.user!.uid,
+                            name: nameController.text,
+                            email: emailController.text,
+                            urlPhoto: credential.user!.photoURL ?? '',
+                          );
+
+                          FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: emailController.text,
                             password: passwordController.text,
                           );
-                          await credential.user!.updateDisplayName(nameController.text);
-                          await credential.user!.reload();
+
                           if (!mounted) return;
                           setState(() {
                             signUpRequired = false;
                           });
+
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (_) => const Quiz()),
                           );
@@ -254,7 +275,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           setState(() {
                             signUpRequired = false;
                             if (e.code == 'email-already-in-use') {
-                              _emailError = 'The account already exists for that email.';
+                              _emailError =
+                                  'The account already exists for that email.';
                             }
                             _formKey.currentState!.validate();
                           });

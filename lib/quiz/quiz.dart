@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/quiz/questions_screen.dart';
 import 'package:tutorial_app/quiz/results_screen.dart';
+import 'package:tutorial_app/screens/profile_details.dart';
 import '../screens/auth/welcome_screen.dart';
 import '../widgets/user_Avatar.dart';
-import 'data/questions.dart';
+import 'data/questions1.dart';
 import 'home_page.dart';
 
 class Quiz extends StatefulWidget {
@@ -36,8 +37,9 @@ class _QuizState extends State<Quiz> {
 
   @override
   Widget build(BuildContext context) {
-    User user = FirebaseAuth.instance.currentUser!;
-    final String? userName = FirebaseAuth.instance.currentUser!.displayName;
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userName = user?.displayName;
+    String? userImage = user?.photoURL;
 
     Widget screenWidget = HomePage(switchScreen);
 
@@ -47,7 +49,7 @@ class _QuizState extends State<Quiz> {
       screenWidget = ResultsScreen(switchScreen, chosenAnswers: selectedAnswer);
     }
 
-  late final BoxDecoration gradientDecoration;
+    late final BoxDecoration gradientDecoration;
 
     gradientDecoration = BoxDecoration(
       gradient: LinearGradient(
@@ -55,7 +57,7 @@ class _QuizState extends State<Quiz> {
         end: Alignment.bottomRight,
         colors: [
           Theme.of(context).colorScheme.primary,
-          Theme.of(context).colorScheme.secondary
+          Theme.of(context).colorScheme.secondary,
         ],
       ),
     );
@@ -65,23 +67,45 @@ class _QuizState extends State<Quiz> {
         // Make AppBar transparent and apply gradient via flexibleSpace
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          elevation: 0,
-          title: Text('Welcome $userName, you are in!', style: const TextStyle(color: Colors.white)),
+          elevation: 1,
+          title: Text(
+            'Welcome $userName, you are in!',
+            style: const TextStyle(color: Colors.white),
+          ),
           flexibleSpace: Container(decoration: gradientDecoration),
           actions: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: InkWell(
-                onTap: () async {
-                  await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => WelcomeScreen()),
-                  );
+              child: PopupMenuButton<String>(
+                position: PopupMenuPosition.under,
+                offset: const Offset(0, 8),
+                onSelected: (value) async {
+                  if (value == 'logout') {
+                    await FirebaseAuth.instance.signOut();
+                  } else if (value == 'profile') {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => ProfileDetailScreen()),
+                    );
+                    setState(() {
+                      userImage = user?.photoURL;
+                    });
+                  }
                 },
-                borderRadius: BorderRadius.circular(10),
-                child: userAvatar(user.photoURL),
+                itemBuilder:
+                    (context) => [
+                      const PopupMenuItem(
+                        value: 'profile',
+                        child: Text('Ver perfil'),
+                      ),
+                      const PopupMenuItem(value: 'about', child: Text('About')),
+                      const PopupMenuItem(
+                        value: 'logout',
+                        child: Text('Cerrar sesión'),
+                      ),
+                    ],
+                child: userAvatar(userImage),
               ),
-            )
+            ),
           ],
         ),
         body: Container(

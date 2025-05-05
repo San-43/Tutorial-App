@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/firestore/user_firestore_service.dart';
+import 'package:tutorial_app/screens/tutorial/tutorial_home.dart';
+import 'package:tutorial_app/userPreferences.dart';
 import '../../quiz/quiz.dart';
 import 'components/my_text_field.dart';
 import 'forgot_password_screen.dart';
@@ -127,9 +130,18 @@ class _SignInScreenState extends State<SignInScreen> {
                           setState(() {
                             signInRequired = false;
                           });
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (_) => const Quiz()),
-                          );
+                          bool quizDone = await UserFirestoreService().getQuiz();
+
+                          if (!quizDone) {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => const Tutorial()),
+                            );
+                          } else {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (_) => const Quiz()),
+                            );
+                          }
+
                         } on FirebaseAuthException catch (e) {
                           setState(() {
                             signInRequired = false;

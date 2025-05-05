@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 Widget userAvatar(String? photoUrl, {double radius = 24}) {
@@ -5,7 +7,7 @@ Widget userAvatar(String? photoUrl, {double radius = 24}) {
     radius: radius,
     backgroundColor: Colors.grey.shade200,
     backgroundImage: photoUrl != null && photoUrl.isNotEmpty
-        ? NetworkImage(photoUrl)
+        ? FileImage(File(photoUrl))
         : null,
     child: (photoUrl == null || photoUrl.isEmpty)
         ? Icon(
