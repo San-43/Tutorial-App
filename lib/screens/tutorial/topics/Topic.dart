@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/firestore/user_firestore_service.dart';
 import 'package:tutorial_app/quiz/quiz.dart';
+import 'package:tutorial_app/utils/animated_border_icon.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../widgets/user_Avatar.dart';
@@ -117,7 +118,41 @@ class _TopicState extends State<Topic> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-
+        height: 60,
+        elevation: 3,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: ElevatedButton(
+        onPressed: () {},
+        child: RepaintBoundary(
+          child: AnimatedBorderIcon(
+            icon: Container(
+              margin: const EdgeInsets.all(5),
+              width: 50,
+              height: 50,
+              padding: EdgeInsets.all(2),
+              // color: Colors.white,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.deepOrangeAccent,
+                    offset: Offset(0, 0),
+                    blurStyle: BlurStyle.normal,
+                    blurRadius: 2,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                "assets/images/quiz-logo.png",
+                width: 40,
+                height: 40,
+              ),
+            ),
+          ),
+        ),
       ),
       // Aplicamos un gradiente de fondo usando colores más suaves de los contenedores del Theme
       body: Column(
@@ -220,7 +255,8 @@ class _TopicState extends State<Topic> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => Quiz(progress: widget.index + 1),
+                            builder:
+                                (context) => Quiz(progress: widget.index + 1),
                           ),
                         );
                       },

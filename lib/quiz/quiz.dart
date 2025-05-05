@@ -91,6 +91,7 @@ class _QuizState extends State<Quiz> {
                     onSelected: (value) async {
                       if (value == 'logout') {
                         await FirebaseAuth.instance.signOut();
+                        Navigator.of(context).pop();
                       } else if (value == 'profile') {
                         await Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => ProfileDetailScreen()),
