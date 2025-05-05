@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/screens/tutorial/data/images_list.dart';
+import 'package:tutorial_app/screens/tutorial/topics/Topic.dart';
 import 'package:tutorial_app/screens/tutorial/units.dart';
 import 'package:video_player/video_player.dart';
 
@@ -51,30 +53,35 @@ class _TutorialState extends State<Tutorial> {
     _controller = VideoPlayerController.asset('assets/tutorial_video.mp4');
 
     // Safely handle asynchronous operation for video initialization
-    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
-      if (mounted) {
-        _controller.setLooping(true);
-        _controller.play();
-      }
-    }).catchError((error) {
-      print("Error initializing video: $error");
-    });
+    _initializeVideoPlayerFuture = _controller
+        .initialize()
+        .then((_) {
+          if (mounted) {
+            _controller.setLooping(true);
+            _controller.play();
+          }
+        })
+        .catchError((error) {
+          print("Error initializing video: $error");
+        });
 
     // Safely retrieve progress from Firestore
-    UserFirestoreService().getProgress().then((value) {
-      if (mounted) {
-        setState(() {
-          progress = value;
+    UserFirestoreService()
+        .getProgress()
+        .then((value) {
+          if (mounted) {
+            setState(() {
+              progress = value;
+            });
+          }
+        })
+        .catchError((error) {
+          print("Error fetching progress: $error");
         });
-      }
-    }).catchError((error) {
-      print("Error fetching progress: $error");
-    });
   }
 
   @override
   void dispose() {
-    // Dispose the VideoPlayerController to release resources
     _controller.dispose();
     super.dispose();
   }
@@ -171,13 +178,25 @@ class _TutorialState extends State<Tutorial> {
                     onTap:
                         isActive
                             ? () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Clicked: ${unit.title}'),
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => Topic(
+                                        images: imagesList[index+1]!,
+                                        identifier: index,
+                                      ),
                                 ),
                               );
                             }
-                            : null,
+                            : () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Por favor, termine los temas anteriores primero',
+                                  ),
+                                ),
+                              );
+                            },
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(

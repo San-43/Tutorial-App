@@ -42,6 +42,7 @@ dependencies:
   image_picker: ^1.1.2
   cloud_firestore: ^5.6.7
   video_player: ^2.9.5
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +63,10 @@ flutter:
   assets:
     - assets/images/quiz-logo.png
     - assets/tutorial_video.mp4
+    - assets/topic1/1.png
+    - assets/topic1/2.png
+    - assets/topic1/3.png
+    - assets/topic1/4.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
