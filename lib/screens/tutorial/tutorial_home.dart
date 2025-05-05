@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/screens/tutorial/data/images_list.dart';
 import 'package:tutorial_app/screens/tutorial/data/resources_list.dart';
-import 'package:tutorial_app/screens/tutorial/topics/Topic.dart';
+import 'package:tutorial_app/screens/tutorial/topics/topic.dart';
 import 'package:tutorial_app/screens/tutorial/units.dart';
 import 'package:video_player/video_player.dart';
 
