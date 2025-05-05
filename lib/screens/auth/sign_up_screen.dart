@@ -249,7 +249,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           await credential.user!.updateDisplayName(
                             nameController.text,
                           );
-                          await credential.user!.reload();
 
                           await UserFirestoreService().createUser(
                             uid: credential.user!.uid,

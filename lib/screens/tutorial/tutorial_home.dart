@@ -18,9 +18,7 @@ class Tutorial extends StatefulWidget {
 }
 
 class _TutorialState extends State<Tutorial> {
-  final User user = FirebaseAuth.instance.currentUser!;
-  String? userName;
-  String? userImage;
+
 
   final List<Unit> units = const [
     Unit(
@@ -47,10 +45,6 @@ class _TutorialState extends State<Tutorial> {
   @override
   void initState() {
     super.initState();
-
-    userName = user.displayName ?? 'Default Name';
-    userImage = user.photoURL ?? 'Default URL';
-
     _controller = VideoPlayerController.asset('assets/tutorial_video.mp4');
 
     // Safely handle asynchronous operation for video initialization
@@ -89,15 +83,16 @@ class _TutorialState extends State<Tutorial> {
 
   @override
   Widget build(BuildContext context) {
-    final String? displayName = userName;
-    final String avatarUrl = userImage ?? 'default_avatar.png';
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userName = user?.displayName;
+    String? userImage = user?.photoURL;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 1,
         title: Text(
-          'Welcome $displayName, you are in!',
+          'Welcome $userName, you are in!',
           style: const TextStyle(color: Colors.white),
         ),
         flexibleSpace: Container(
@@ -126,7 +121,7 @@ class _TutorialState extends State<Tutorial> {
                     MaterialPageRoute(builder: (_) => ProfileDetailScreen()),
                   );
                   setState(() {
-                    userImage = user.photoURL ?? 'default_avatar.png';
+                    userImage = user!.photoURL ?? 'default_avatar.png';
                   });
                 }
               },
@@ -142,7 +137,7 @@ class _TutorialState extends State<Tutorial> {
                       child: Text('Cerrar sesión'),
                     ),
                   ],
-              child: userAvatar(avatarUrl),
+              child: userAvatar(userImage),
             ),
           ),
         ],

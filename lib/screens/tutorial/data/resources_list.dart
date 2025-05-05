@@ -31,8 +31,8 @@ Map<int, List<Resource>> resourcesList = {
   ],
   3: [
     Resource(
-      title: 'Write Your First Flutter App | Flutter.dev',
-      url: 'https://flutter.dev/docs/get-started/codelab',
+      title: 'First app github repository | App Code ',
+      url: 'https://github.com/San-43/flutter_projects/blob/master/first/lib/main.dart',
     ),
     Resource(
       title: 'Flutter for Beginners | Udemy Free Course',

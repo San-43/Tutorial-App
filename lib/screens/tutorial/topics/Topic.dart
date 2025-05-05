@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/firestore/user_firestore_service.dart';
+import 'package:tutorial_app/quiz/quiz.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../widgets/user_Avatar.dart';
@@ -23,13 +25,30 @@ class Topic extends StatefulWidget {
 }
 
 class _TopicState extends State<Topic> {
-  final User user = FirebaseAuth.instance.currentUser!;
-  String? userName;
-  String? userImage;
+  late int progress;
+
+  void getProgress() async {
+    try {
+      progress = await UserFirestoreService().getProgress();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'No se pudo obtener el progreso correctamente, por favor inténtelo más tarde',
+          ),
+        ),
+      );
+      progress = 1;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height * 0.5;
-    final String avatarUrl = user.photoURL ?? 'default_avatar.png';
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userName = user?.displayName;
+    String? userImage = user?.photoURL;
+    getProgress();
 
     return Scaffold(
       appBar: AppBar(
@@ -58,12 +77,13 @@ class _TopicState extends State<Topic> {
               onSelected: (value) async {
                 if (value == 'logout') {
                   await FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pop();
                 } else if (value == 'profile') {
                   await Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => ProfileDetailScreen()),
                   );
                   setState(() {
-                    userImage = user.photoURL ?? 'default_avatar.png';
+                    userImage = user!.photoURL;
                   });
                 }
               },
@@ -79,7 +99,7 @@ class _TopicState extends State<Topic> {
                       child: Text('Cerrar sesión'),
                     ),
                   ],
-              child: userAvatar(avatarUrl),
+              child: userAvatar(userImage),
             ),
           ),
         ],
@@ -138,17 +158,31 @@ class _TopicState extends State<Topic> {
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: Row(
                               children: [
-                                Icon(res.visited ? Icons.check_circle : Icons.check_circle_outline ),
-                                SizedBox(width: 5,),
-                                Text(
-                                  res.title,
-                                  style: TextStyle(
-                                    color:
-                                    res.visited ? Colors.purple : Colors.blue,
+                                Icon(
+                                  res.visited
+                                      ? Icons.check_circle
+                                      : Icons.check_circle_outline,
+                                ),
+                                SizedBox(width: 5),
+                                // Expanded evita overflow dándole al Text el espacio disponible
+                                Expanded(
+                                  child: Text(
+                                    res.title,
+                                    style: TextStyle(
+                                      color:
+                                          res.visited
+                                              ? Colors.purple
+                                              : Colors.blue,
+                                    ),
+                                    maxLines: 1, // como mucho una línea
+                                    overflow:
+                                        TextOverflow
+                                            .ellipsis, // recorta con “…”
+                                    softWrap: false,
                                   ),
                                 ),
                               ],
-                            )
+                            ),
                           ),
                         );
                       },
@@ -169,10 +203,11 @@ class _TopicState extends State<Topic> {
                         elevation: 4,
                       ),
                       onPressed: () {
-                        /*Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const QuizPage()),
-                        );*/
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => Quiz(progress: progress),
+                          ),
+                        );
                       },
                       child: Text(
                         'Ir al Quiz',

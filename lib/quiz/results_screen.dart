@@ -3,39 +3,67 @@ import 'package:flutter/material.dart';
 import 'package:tutorial_app/firestore/user_firestore_service.dart';
 import 'package:tutorial_app/quiz/questions_summary/questions_summary.dart';
 import 'package:tutorial_app/screens/tutorial/tutorial_home.dart';
-import 'package:tutorial_app/userPreferences.dart';
 
 import 'data/questions.dart';
 
-class ResultsScreen extends StatelessWidget {
-  ResultsScreen(this.switchScreen, {super.key, required this.chosenAnswers, required this.progress});
+class ResultsScreen extends StatefulWidget {
+  ResultsScreen(
+    this.switchScreen, {
+    super.key,
+    required this.chosenAnswers,
+    required this.progress,
+  });
 
   final void Function() switchScreen;
   final progress;
   List<String> chosenAnswers;
 
+  @override
+  State<ResultsScreen> createState() => _ResultsScreenState();
+}
+
+class _ResultsScreenState extends State<ResultsScreen> {
   List<Map<String, Object>> getSummaryData() {
     final summary = <Map<String, Object>>[];
 
-    for (int i = 0; i < chosenAnswers.length; i++) {
+    for (int i = 0; i < widget.chosenAnswers.length; i++) {
       summary.add({
         'question_index': i,
-        'question': questions[progress]![i].text,
-        'correct_answer': questions[progress]![i].answers[0],
-        'user_answer': chosenAnswers[i],
+        'question': questions[widget.progress]![i].text,
+        'correct_answer': questions[widget.progress]![i].answers[0],
+        'user_answer': widget.chosenAnswers[i],
       });
     }
 
     return summary;
   }
 
+  void updateProgress(double results) async {
+    if (results >= 60 || widget.progress == 0) {
+      try {
+        await UserFirestoreService().updateProgressAndQuiz(progress: widget.progress+1, quiz: true);
+      } catch(e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'No se pudo actualizar el progreso correctamente, por favor inténtelo más tarde',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final numTotalQuestions = questions.length;
-    final numCorrectQuestions =
+    final int numTotalQuestions = questions[widget.progress]!.length;
+    final int numCorrectQuestions =
         getSummaryData().where((data) {
           return data['user_answer'] == data['correct_answer'];
         }).length;
+
+    final double results =
+        (numCorrectQuestions / numTotalQuestions * 100).toDouble();
 
     return SizedBox(
       width: double.infinity,
@@ -46,9 +74,14 @@ class ResultsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'You answered $numCorrectQuestions out of $numTotalQuestions questions correctly!',
+              results >= 60
+                  ? 'Aprobaste el quiz con un $results% FELICIDADES!'
+                  : 'Reprobaste el quiz con un $results%, más suerte la próxima vez',
               style: GoogleFonts.lato(
-                color: Color.fromARGB(255, 230, 200, 253),
+                color:
+                    results >= 60
+                        ? Color.fromARGB(255, 230, 200, 253)
+                        : Colors.redAccent,
                 fontSize: 21,
                 fontWeight: FontWeight.bold,
               ),
@@ -59,7 +92,7 @@ class ResultsScreen extends StatelessWidget {
             SizedBox(height: 30),
             TextButton.icon(
               onPressed: () {
-                return switchScreen();
+                return widget.switchScreen();
               },
               icon: Icon(Icons.refresh, color: Colors.white, size: 24),
               label: Text(
@@ -74,7 +107,7 @@ class ResultsScreen extends StatelessWidget {
             SizedBox(height: 10),
             TextButton.icon(
               onPressed: () async {
-                await UserFirestoreService().updateProgressAndQuiz(progress: 1, quiz: true);
+                updateProgress(results);
 
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) => Tutorial()),
