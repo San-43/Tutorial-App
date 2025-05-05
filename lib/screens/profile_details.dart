@@ -98,9 +98,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                       onPressed: () => _pickImage(true),
                       icon: Icon(Icons.camera, color: Colors.white),
                       label: Text(
-                        _pickedImageFile == null
-                            ? 'Take a Photo'
-                            : 'Update your Photo',
+                        'Take a Photo',
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ButtonStyle(
@@ -137,7 +135,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                         ),
                       ),
                       label: Text(
-                        'Choose from gallery',
+                        'Choose a picture',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

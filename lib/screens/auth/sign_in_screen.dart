@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/firestore/user_firestore_service.dart';
 import 'package:tutorial_app/screens/tutorial/tutorial_home.dart';
-import 'package:tutorial_app/userPreferences.dart';
 import '../../quiz/quiz.dart';
 import 'components/my_text_field.dart';
 import 'forgot_password_screen.dart';
@@ -142,7 +141,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             );
                           }
 
-                        } on FirebaseAuthException catch (e) {
+                        } on FirebaseAuthException {
                           setState(() {
                             signInRequired = false;
                             _passwordError = 'Invalid Credentials';
