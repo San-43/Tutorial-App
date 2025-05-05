@@ -29,16 +29,27 @@ class _TopicState extends State<Topic> {
 
   void getProgress() async {
     try {
-      progress = await UserFirestoreService().getProgress();
+      final newProgress = await UserFirestoreService().getProgress();
+      if (mounted) {
+        setState(() {
+          progress = newProgress;
+        });
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'No se pudo obtener el progreso correctamente, por favor inténtelo más tarde',
+      debugPrint('Error fetching progress: $e');
+      if (mounted) {
+        setState(() {
+          progress = 1; // Fallback value
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'No se pudo obtener el progreso correctamente, por favor inténtelo más tarde',
+            ),
           ),
-        ),
-      );
-      progress = 1;
+        );
+      }
     }
   }
 
@@ -46,7 +57,6 @@ class _TopicState extends State<Topic> {
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height * 0.5;
     User? user = FirebaseAuth.instance.currentUser;
-    String? userName = user?.displayName;
     String? userImage = user?.photoURL;
     getProgress();
 
@@ -62,8 +72,8 @@ class _TopicState extends State<Topic> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Theme.of(context).colorScheme.primary.withOpacity(.8),
-                Theme.of(context).colorScheme.secondary.withOpacity(.8),
+                Theme.of(context).colorScheme.primary.withValues(alpha: .8),
+                Theme.of(context).colorScheme.secondary.withValues(alpha: .8),
               ],
             ),
           ),
