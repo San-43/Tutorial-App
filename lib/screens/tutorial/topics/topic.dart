@@ -6,6 +6,7 @@ import 'package:tutorial_app/quiz/quiz.dart';
 import 'package:tutorial_app/utils/animated_border_icon.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../main.dart';
 import '../../../widgets/user_Avatar.dart';
 import '../../profile_details.dart';
 import '../model/resource.dart';
@@ -91,7 +92,7 @@ class _TopicState extends State<Topic> {
               onSelected: (value) async {
                 if (value == 'logout') {
                   await FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => AuthGate()));
                 } else if (value == 'profile') {
                   await Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => ProfileDetailScreen()),

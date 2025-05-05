@@ -131,7 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           });
                           bool quizDone = await UserFirestoreService().getQuiz();
 
-                          if (!quizDone) {
+                          if (quizDone) {
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (_) => const Tutorial()),
                             );

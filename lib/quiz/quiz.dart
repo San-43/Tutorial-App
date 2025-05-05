@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/firestore/user_firestore_service.dart';
+import 'package:tutorial_app/main.dart';
 import 'package:tutorial_app/quiz/questions_screen.dart';
 import 'package:tutorial_app/quiz/results_screen.dart';
 import 'package:tutorial_app/screens/profile_details.dart';
@@ -91,7 +92,7 @@ class _QuizState extends State<Quiz> {
                     onSelected: (value) async {
                       if (value == 'logout') {
                         await FirebaseAuth.instance.signOut();
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => AuthGate()));
                       } else if (value == 'profile') {
                         await Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => ProfileDetailScreen()),

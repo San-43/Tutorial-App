@@ -1,8 +1,8 @@
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorial_app/firestore/user_firestore_service.dart';
+import 'package:tutorial_app/main.dart';
 import 'package:tutorial_app/quiz/questions_summary/questions_summary.dart';
-import 'package:tutorial_app/screens/tutorial/tutorial_home.dart';
 
 import 'data/questions.dart';
 
@@ -112,15 +112,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
             SizedBox(height: 10),
             TextButton.icon(
               onPressed: () {
-                if (widget.progress > 0) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => Tutorial()),
-                  );
-                } else {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => Tutorial()),
-                  );
-                }
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MyApp()));
               },
               style: TextButton.styleFrom(
                 backgroundColor: Colors.greenAccent,

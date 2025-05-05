@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/main.dart';
 import 'package:tutorial_app/screens/tutorial/data/images_list.dart';
 import 'package:tutorial_app/screens/tutorial/data/resources_list.dart';
 import 'package:tutorial_app/screens/tutorial/topics/topic.dart';
@@ -116,6 +117,7 @@ class _TutorialState extends State<Tutorial> {
               onSelected: (value) async {
                 if (value == 'logout') {
                   await FirebaseAuth.instance.signOut();
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => AuthGate()));
                 } else if (value == 'profile') {
                   await Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => ProfileDetailScreen()),
