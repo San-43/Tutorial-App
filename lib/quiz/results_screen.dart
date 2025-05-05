@@ -41,8 +41,11 @@ class _ResultsScreenState extends State<ResultsScreen> {
   void updateProgress(double results) async {
     if (results >= 60 || widget.progress == 0) {
       try {
-        await UserFirestoreService().updateProgressAndQuiz(progress: widget.progress+1, quiz: true);
-      } catch(e) {
+        await UserFirestoreService().updateProgressAndQuiz(
+          progress: widget.progress + 1,
+          quiz: true,
+        );
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -108,10 +111,16 @@ class _ResultsScreenState extends State<ResultsScreen> {
             ),
             SizedBox(height: 10),
             TextButton.icon(
-              onPressed: () async {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => Tutorial()),
-                );
+              onPressed: () {
+                if (widget.progress > 0) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => Tutorial()),
+                  );
+                } else {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => Tutorial()),
+                  );
+                }
               },
               style: TextButton.styleFrom(
                 backgroundColor: Colors.greenAccent,
