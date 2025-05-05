@@ -19,11 +19,11 @@ class _TutorialState extends State<Tutorial> {
   String? userName;
   String? userImage;
 
-  // List of tutorial units using the Unit model
   final List<Unit> units = const [
     Unit(
       title: '¿Qué es Flutter?',
-      subtitle: 'Un kit de desarrollo de UI de código abierto creado por Google.',
+      subtitle:
+          'Un kit de desarrollo de UI de código abierto creado por Google.',
     ),
     Unit(
       title: 'Instalando Flutter y primeros pasos',
@@ -39,26 +39,44 @@ class _TutorialState extends State<Tutorial> {
   int? hoverIndex;
 
   late VideoPlayerController _controller;
+  late Future<void> _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-    userName = user.displayName;
-    userImage = user.photoURL;
 
-    _controller = VideoPlayerController.asset('assets/tutorial_video.mp4')
-      ..setLooping(true)
-      ..setVolume(0)
-      ..initialize().then((_) {
-        setState(() {});
+    userName = user.displayName ?? 'Default Name';
+    userImage = user.photoURL ?? 'Default URL';
+
+    _controller = VideoPlayerController.asset('assets/tutorial_video.mp4');
+
+    // Safely handle asynchronous operation for video initialization
+    _initializeVideoPlayerFuture = _controller.initialize().then((_) {
+      if (mounted) {
+        _controller.setLooping(true);
         _controller.play();
-      });
-
-    UserFirestoreService().getProgress().then((value) {
-      setState(() {
-        progress = value;
-      });
+      }
+    }).catchError((error) {
+      print("Error initializing video: $error");
     });
+
+    // Safely retrieve progress from Firestore
+    UserFirestoreService().getProgress().then((value) {
+      if (mounted) {
+        setState(() {
+          progress = value;
+        });
+      }
+    }).catchError((error) {
+      print("Error fetching progress: $error");
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose the VideoPlayerController to release resources
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -104,17 +122,18 @@ class _TutorialState extends State<Tutorial> {
                   });
                 }
               },
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'profile',
-                  child: Text('Ver perfil'),
-                ),
-                const PopupMenuItem(value: 'about', child: Text('About')),
-                const PopupMenuItem(
-                  value: 'logout',
-                  child: Text('Cerrar sesión'),
-                ),
-              ],
+              itemBuilder:
+                  (context) => [
+                    const PopupMenuItem(
+                      value: 'profile',
+                      child: Text('Ver perfil'),
+                    ),
+                    const PopupMenuItem(value: 'about', child: Text('About')),
+                    const PopupMenuItem(
+                      value: 'logout',
+                      child: Text('Cerrar sesión'),
+                    ),
+                  ],
               child: userAvatar(avatarUrl),
             ),
           ),
@@ -122,71 +141,87 @@ class _TutorialState extends State<Tutorial> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: units.length,
-          itemBuilder: (context, index) {
-            final unit = units[index];
-            final bool isActive = index <= progress - 1;
-            final bool isHovered = hoverIndex == index;
+        child: ListView(
+          children: [
+            ...List.generate(units.length, (index) {
+              final unit = units[index];
+              final bool isActive = index <= progress - 1;
+              final bool isHovered = hoverIndex == index;
 
-            Color baseColor = isActive ? Colors.redAccent : Colors.grey.shade300;
-            Color hoverColor = isActive ? Colors.green.shade700 : baseColor;
+              Color baseColor =
+                  isActive ? Colors.redAccent : Colors.grey.shade300;
+              Color hoverColor = isActive ? Colors.green.shade700 : baseColor;
 
-            return MouseRegion(
-              onEnter: (_) {
-                if (isActive) setState(() => hoverIndex = index);
-              },
-              onExit: (_) {
-                if (isActive) setState(() => hoverIndex = null);
-              },
-              child: Card(
-                color: isHovered ? hoverColor : baseColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: isActive ? 6 : 2,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(12),
-                  onTap: isActive
-                      ? () {
-                    // TODO: navigate to unit details
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Clicked: ${unit.title}')),
-                    );
-                  }
-                      : null,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          unit.title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(
-                            color: isActive ? Colors.white : Colors.black54,
+              return MouseRegion(
+                onEnter: (_) {
+                  if (isActive) setState(() => hoverIndex = index);
+                },
+                onExit: (_) {
+                  if (isActive) setState(() => hoverIndex = null);
+                },
+                child: Card(
+                  color: isHovered ? hoverColor : baseColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: isActive ? 6 : 2,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap:
+                        isActive
+                            ? () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Clicked: ${unit.title}'),
+                                ),
+                              );
+                            }
+                            : null,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            unit.title,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleLarge!.copyWith(
+                              color: isActive ? Colors.white : Colors.black54,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          unit.subtitle,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                            color: isActive ? Colors.white70 : Colors.black45,
+                          const SizedBox(height: 8),
+                          Text(
+                            unit.subtitle,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.copyWith(
+                              color: isActive ? Colors.white70 : Colors.black45,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            }),
+            const SizedBox(height: 20),
+            FutureBuilder<void>(
+              future: _initializeVideoPlayerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  return AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
