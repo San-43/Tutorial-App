@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/bot/chat_screen.dart';
 import 'package:tutorial_app/firestore/user_firestore_service.dart';
 import 'package:tutorial_app/quiz/quiz.dart';
 import 'package:tutorial_app/utils/animated_border_icon.dart';
@@ -144,7 +145,9 @@ class _TopicState extends State<Topic> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChatScreen()));
+        },
         child: RepaintBoundary(
           child: AnimatedBorderIcon(
             icon: Container(
